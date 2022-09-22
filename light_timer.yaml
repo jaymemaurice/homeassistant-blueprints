@@ -16,9 +16,8 @@ blueprint:
     light_target:
       name: Light
       selector:
-        target:
-          entity:
-            domain: light
+        entity:
+          domain: light
 
 
 trigger:
