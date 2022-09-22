@@ -1,0 +1,109 @@
+blueprint:
+  name: Light timer
+  description: Start a timer for an entity
+  domain: automation
+  input:
+    timer_entity:
+      name: Timer Entity
+      selector:
+        entity:
+          domain: timer
+    conditional_entity:
+      name: Conditional Entity
+      selector:
+        entity:
+          domain: switch
+    light_target:
+      name: Light
+      selector:
+        target:
+          entity:
+            domain: light
+
+
+trigger:
+  - platform: state
+    entity_id:
+      - !input light_target
+    to: "on"
+    from: "off"
+    id: "0"
+  - platform: state
+    entity_id:
+      - !input timer_entity
+    from: idle
+    to: active
+    id: "1"
+  - platform: state
+    entity_id:
+      - !input light_target
+    to: "off"
+    id: "2"
+  - platform: state
+    entity_id:
+      - !input timer_entity
+    from: active
+    to: idle
+    id: "3"
+action:
+  - choose:
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input conditional_entity
+                state: "on"
+              - condition: state
+                entity_id: !input timer_entity
+                state: idle
+              - condition: state
+                entity_id: !input light_target
+                state: "on"
+              - condition: trigger
+                id: "0"
+        sequence:
+          - service: timer.start
+            data: {}
+            target:
+              entity_id: !input timer_entity
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input light_target
+                state: "off"
+              - condition: trigger
+                id: "1"
+        sequence:
+          - service: light.turn_on
+            data: {}
+            target:
+              entity_id: !input light_target
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input light_target
+                state: "off"
+              - condition: trigger
+                id: "2"
+        sequence:
+          - service: timer.cancel
+            data: {}
+            target:
+              entity_id: !input timer_entity
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input conditional_entity
+                state: "on"
+              - condition: trigger
+                id: "3"
+        sequence:
+          - service: light.turn_off
+            data: {}
+            target:
+              entity_id: !input light_target
+mode: restart
+max_exceeded: silent
