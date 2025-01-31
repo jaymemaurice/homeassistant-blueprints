@@ -131,7 +131,7 @@ action:
               - condition: trigger
                 id: "5"
         sequence:
-          - service: timer.cancel
+          - service: timer.pause
             data: {}
             target:
               entity_id: !input timer_entity
