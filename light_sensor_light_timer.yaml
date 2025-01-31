@@ -60,7 +60,7 @@ trigger:
       - !input lux_sensor
     for:
       hours: 0
-      minutes: 10
+      minutes: 5
       seconds: 0
     above: !input lux
     id: "4"
