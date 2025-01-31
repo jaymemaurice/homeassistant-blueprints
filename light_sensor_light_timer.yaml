@@ -57,12 +57,12 @@ trigger:
     id: "3"
   - numeric_state
     entity_id:
-      - !lux_sensor
+      - !input lux_sensor
     for:
       hours: 0
       minutes: 10
       seconds: 0
-    above: !lux
+    above: !input lux
     id: "4"
 
 action:
@@ -77,8 +77,8 @@ action:
                 entity_id: !input timer_entity
                 state: idle
               - condition: numeric_state
-                entity_id: !lux_sensor
-                above: !lux
+                entity_id: !input lux_sensor
+                above: !input lux
               - condition: state
                 entity_id: !input light_target
                 state: "on"
