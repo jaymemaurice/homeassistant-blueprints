@@ -1,6 +1,6 @@
 blueprint:
-  name: Light timer
-  description: Start a timer for an entity
+  name: Illuminance Sensor Light timer
+  description: Start a timer for a light entity but only when an illuminance sensor is above a set value. Stop the entity when the timer expires.
   domain: automation
   input:
     lux:
@@ -64,6 +64,11 @@ trigger:
       seconds: 0
     above: !input lux
     id: "4"
+  - platform: numeric_state
+    entity_id:
+      - !input lux_sensor
+    below: !input lux
+    id: "5"
 
 action:
   - choose:
@@ -112,6 +117,19 @@ action:
                 state: "off"
               - condition: trigger
                 id: "2"
+        sequence:
+          - service: timer.cancel
+            data: {}
+            target:
+              entity_id: !input timer_entity
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input light_target
+                state: "on"
+              - condition: trigger
+                id: "5"
         sequence:
           - service: timer.cancel
             data: {}
