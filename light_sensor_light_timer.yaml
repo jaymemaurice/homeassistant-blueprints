@@ -55,8 +55,9 @@ trigger:
     from: active
     to: idle
     id: "3"
-  - numeric_state
-    entity_id: !input lux_sensor
+  - platform: numeric_state
+    entity_id: 
+      - !input lux_sensor
     for:
       hours: 0
       minutes: 10
